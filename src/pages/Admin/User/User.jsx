@@ -2,7 +2,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { useDeleteUser, useGetAllUsers } from "../../../apis/user/user";
 import { useEffect, useState } from "react";
-import UserEdit from "../../../components/modals/userEdit";
+import UserEdit from "../../../components/modals/UserEdit";
 import DeleteAlert from "../../../components/modals/DeleteAlert";
 
 const User = () => {
