@@ -1,17 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import HeaderFooterLayout from "./layouts/HeaderFooter";
+import AdminLayout from "./layouts/Admin";
 import BlankLayout from "./layouts/Blank";
 
-import Home from "./pages/Home/Home";
 import Products from "./pages/Products/Products";
 import SignIn from "./pages/Auth/SignIn/SignIn";
 import SignUp from "./pages/Auth/SignUp/SignUp";
 import Error404 from "./pages/Error/Error404";
-import AdminLayout from "./layouts/Admin";
+import Home from "./pages/Home/Home";
+
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
-import User from "./pages/Admin/User/User";
 import Category from "./pages/Admin/Category/Category";
+import Product from "./pages/Admin/Product/Product";
+import User from "./pages/Admin/User/User";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/category",
         element: <Category />,
+      },
+      {
+        path: "/admin/product",
+        element: <Product />,
       },
     ],
   },
