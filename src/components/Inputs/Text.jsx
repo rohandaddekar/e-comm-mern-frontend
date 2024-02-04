@@ -2,13 +2,15 @@
 
 const TextInput = ({
   id,
+  min,
+  max,
   type,
   label,
-  placeholder,
-  value,
-  onChange,
   error,
+  value,
   disabled,
+  onChange,
+  placeholder,
   inputExtraClasses,
   labelExtraClasses,
 }) => {
@@ -28,14 +30,16 @@ const TextInput = ({
       )}
       <input
         id={id}
+        min={min}
+        max={max}
         type={type}
+        value={value}
+        disabled={disabled}
+        onChange={handleChange}
         placeholder={placeholder}
-        className={`input input-bordered w-full ${
+        className={`input input-bordered rounded-[4px] py-4 w-full ${
           error && "input-error"
         } ${inputExtraClasses}`}
-        value={value}
-        onChange={handleChange}
-        disabled={disabled}
       />
       {error && (
         <span className="text-error text-sm ms-1 mt-1 font-semibold">
