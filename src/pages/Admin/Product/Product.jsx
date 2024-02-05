@@ -129,18 +129,41 @@ const Product = () => {
                         <td>
                           <div className="flex items-center gap-3">
                             <div
-                              className="avatar border rounded-full cursor-pointer"
+                              className="cursor-pointer"
                               title="View Product Images"
                               onClick={(e) =>
                                 imagesSwiperModalHandler(e, product?._id)
                               }
                             >
-                              <div className="mask mask-squircle w-8 h-8">
+                              <div className="avatar-group -space-x-6 rtl:space-x-reverse">
+                                {product?.images?.slice(0, 2)?.map((img, i) => (
+                                  <div
+                                    className="avatar border-gray-200"
+                                    key={i}
+                                  >
+                                    <div className="w-12">
+                                      <img src={img} />
+                                    </div>
+                                  </div>
+                                ))}
+
+                                {product?.images?.length > 2 && (
+                                  <div
+                                    className="avatar placeholder border-gray-200"
+                                    key="placeholder"
+                                  >
+                                    <div className="w-12 bg-neutral text-neutral-content">
+                                      <span>+{product.images.length - 2}</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              {/* <div className="mask mask-squircle w-8 h-8">
                                 <img
                                   src={product?.images[0]}
                                   alt={product?.name}
                                 />
-                              </div>
+                              </div> */}
                             </div>
                             <div>
                               <p className="font-bold">{product?.name}</p>
