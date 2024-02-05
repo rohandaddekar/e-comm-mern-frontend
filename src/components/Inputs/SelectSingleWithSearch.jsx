@@ -3,17 +3,20 @@
 import Select from "react-select";
 
 const SelectSingleWithSearch = ({
-  label,
-  isLoading,
-  options,
-  value,
-  onChange,
   error,
+  value,
+  label,
+  options,
+  onChange,
+  isLoading,
+  labelExtraClasses,
+  selectExtraClasses,
 }) => {
   const customStyles = {
     control: (provided) => ({
       ...provided,
       borderColor: error && "#e53e3e",
+      ...selectExtraClasses,
     }),
   };
 
@@ -21,7 +24,9 @@ const SelectSingleWithSearch = ({
     <>
       <div>
         {label && (
-          <span className="text-sm font-medium leading-6 text-gray-900">
+          <span
+            className={`text-sm font-medium leading-6 text-gray-900 ${labelExtraClasses}`}
+          >
             {label}
           </span>
         )}

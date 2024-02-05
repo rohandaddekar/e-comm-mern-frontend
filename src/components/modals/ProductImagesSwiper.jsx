@@ -25,7 +25,7 @@ const ProductImagesSwiper = ({ images }) => {
                 "--swiper-navigation-color": "#fff",
                 "--swiper-pagination-color": "#fff",
               }}
-              loop={images?.length > 0 && true}
+              loop={images?.length > 1 && true}
               spaceBetween={10}
               navigation={true}
               modules={[FreeMode, Navigation, Thumbs]}

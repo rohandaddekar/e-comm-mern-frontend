@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import moment from "moment";
 import ProductImagesSwiper from "../../../components/modals/ProductImagesSwiper";
+import SelectSingleWithSearch from "../../../components/Inputs/SelectSingleWithSearch";
+import { useGetAllCategories } from "../../../apis/category/category";
 
 const Product = () => {
   const { data, isLoading, getAllProductsReq, refetch } = useGetAllProducts();
@@ -21,12 +23,18 @@ const Product = () => {
     isLoading: deleteIsLoading,
     deleteProductReq,
   } = useDeleteProduct();
+  const {
+    data: allCategoryData,
+    isLoading: allCategoryIsLoading,
+    getAllCategoriesReq,
+  } = useGetAllCategories();
 
   const [selectedEditId, setSelectedId] = useState(null);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
   const [swiperModalImages, setSwiperModalImages] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
+    categoryId: "",
     sortBy: "name",
   });
 
@@ -38,8 +46,31 @@ const Product = () => {
   };
 
   useEffect(() => {
-    getAllProductsReq({ name: formData.name, sortBy: formData.sortBy });
-  }, [formData.name, formData.sortBy]);
+    getAllCategoriesReq();
+    getAllProductsReq();
+  }, []);
+
+  const filterHandler = (e) => {
+    e.preventDefault();
+
+    getAllProductsReq({
+      name: formData.name,
+      categoryId: formData.categoryId.value,
+      sortBy: formData.sortBy,
+    });
+  };
+
+  const filterResetHandler = (e) => {
+    e.preventDefault();
+
+    setFormData({
+      name: "",
+      categoryId: "",
+      sortBy: "",
+    });
+
+    getAllProductsReq();
+  };
 
   const modalHandler = (e, modalName, id) => {
     e.preventDefault();
@@ -76,11 +107,28 @@ const Product = () => {
               id={"name"}
               label={"Filter by Name"}
               type={"text"}
-              placeholder={"Electronic"}
+              placeholder={"Laptop"}
               value={formData.name}
               onChange={(value) => onChangeHandler("name", value)}
               inputExtraClasses={"w-80"}
               labelExtraClasses={"text-xs"}
+            />
+
+            <SelectSingleWithSearch
+              label={"Filter by Category"}
+              labelExtraClasses={"text-xs"}
+              value={formData.categoryId}
+              isLoading={allCategoryIsLoading}
+              onChange={(value) => onChangeHandler("categoryId", value)}
+              options={allCategoryData?.categories?.map((category) => ({
+                value: category._id,
+                label: category.name,
+              }))}
+              selectExtraClasses={{
+                paddingTop: "5px",
+                paddingBottom: "5px",
+                width: "200px",
+              }}
             />
 
             <SelectInput
@@ -95,10 +143,24 @@ const Product = () => {
               labelExtraClasses={"text-xs"}
             />
 
-            <form onSubmit={(e) => modalHandler(e, "categoryCreateModal")}>
-              <Button type={"submit"} title={"Create"} />
+            <form onSubmit={filterHandler}>
+              <Button type={"submit"} title={"Filter"} />
+            </form>
+
+            <form onSubmit={filterResetHandler}>
+              <Button
+                type={"submit"}
+                title={"Reset"}
+                extraClasses={"btn-outline"}
+              />
             </form>
           </div>
+        </div>
+
+        <div className="my-5">
+          <form onSubmit={(e) => modalHandler(e, "categoryCreateModal")}>
+            <Button type={"submit"} title={"Create"} />
+          </form>
         </div>
 
         {isLoading ? (
