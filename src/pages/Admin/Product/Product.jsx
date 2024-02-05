@@ -1,5 +1,4 @@
 import ProductCreate from "../../../components/modals/ProductCreate";
-import { useDeleteCategory } from "../../../apis/category/category";
 import {
   useDeleteProduct,
   useGetAllProducts,
@@ -13,6 +12,7 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import moment from "moment";
+import ProductImagesSwiper from "../../../components/modals/ProductImagesSwiper";
 
 const Product = () => {
   const { data, isLoading, getAllProductsReq, refetch } = useGetAllProducts();
@@ -24,6 +24,7 @@ const Product = () => {
 
   const [selectedEditId, setSelectedId] = useState(null);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+  const [swiperModalImages, setSwiperModalImages] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     sortBy: "name",
@@ -50,6 +51,15 @@ const Product = () => {
     }
 
     document.getElementById(modalName).showModal();
+  };
+
+  const imagesSwiperModalHandler = (e, id) => {
+    e.preventDefault();
+    document.getElementById("productImagesSwiperModal").showModal();
+
+    const product = data?.products?.filter((product) => product._id === id);
+
+    setSwiperModalImages(product[0].images);
   };
 
   const handleRefetch = () => {
@@ -118,7 +128,13 @@ const Product = () => {
                       <tr key={i}>
                         <td>
                           <div className="flex items-center gap-3">
-                            <div className="avatar border rounded-full">
+                            <div
+                              className="avatar border rounded-full cursor-pointer"
+                              title="View Product Images"
+                              onClick={(e) =>
+                                imagesSwiperModalHandler(e, product?._id)
+                              }
+                            >
                               <div className="mask mask-squircle w-8 h-8">
                                 <img
                                   src={product?.images[0]}
@@ -179,6 +195,8 @@ const Product = () => {
             />
 
             <ProductCreate reFetch={handleRefetch} />
+
+            <ProductImagesSwiper images={swiperModalImages} />
           </>
         )}
       </div>

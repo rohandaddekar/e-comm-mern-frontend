@@ -36,9 +36,9 @@ const ImageUploader = ({ label, onFileUpload, multiple = false, error }) => {
           )}
           <button
             type="button"
+            {...dragProps}
             style={isDragging ? { color: "red" } : undefined}
             onClick={onImageUpload}
-            {...dragProps}
             className={`btn w-full border-dashed border-2 bg-transparent shadow-none py-14 pt-11 font-normal text-sm text-gray-400 hover:bg-transparent hover:text-gray-800 ${
               error && "input-error"
             }`}
@@ -63,6 +63,7 @@ const ImageUploader = ({ label, onFileUpload, multiple = false, error }) => {
                   Remove All Files
                 </button>
               )}
+
               <div className="grid grid-cols-4 gap-4">
                 {imageList.map((image, index) => (
                   <div key={index} className="image-item h-20 relative group">

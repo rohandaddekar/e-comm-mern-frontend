@@ -39,7 +39,7 @@ export const useGetAllProducts = () => {
   return { isLoading, data, error, getAllProductsReq, refetch };
 };
 
-export const useGetCategoryDetails = () => {
+export const useGetProductDetails = () => {
   const axiosInstance = useAxios();
   const headers = useAuthHeader();
 
@@ -47,25 +47,25 @@ export const useGetCategoryDetails = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const getCategoryDetailsReq = async (categoryId) => {
+  const getProductDetailsReq = async (id) => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get(`/category/${categoryId}`, headers);
+      const res = await axiosInstance.get(`/product/${id}`, headers);
       setData(res?.data);
     } catch (err) {
       setError(err?.response?.data);
       toast.error(
-        err?.response?.data?.message || "Failed fetch category details"
+        err?.response?.data?.message || "Failed fetch product details"
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { isLoading, data, error, getCategoryDetailsReq };
+  return { isLoading, data, error, getProductDetailsReq };
 };
 
-export const useUpdateCategoryDetails = () => {
+export const useUpdateProduct = () => {
   const axiosInstance = useAxios();
   const headers = useAuthHeader("multipart/form-data");
 
@@ -73,27 +73,21 @@ export const useUpdateCategoryDetails = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const updateCategoryDetailsReq = async (categoryId, data) => {
+  const updateProductReq = async (id, data) => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.put(
-        `/category/${categoryId}`,
-        data,
-        headers
-      );
+      const res = await axiosInstance.put(`/product/${id}`, data, headers);
       setData(res?.data);
       toast.success(res?.data?.message);
     } catch (err) {
       setError(err?.response?.data);
-      toast.error(
-        err?.response?.data?.message || "Failed to update category details"
-      );
+      toast.error(err?.response?.data?.message || "Failed to update product");
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { isLoading, data, error, updateCategoryDetailsReq };
+  return { isLoading, data, error, updateProductReq };
 };
 
 export const useDeleteProduct = () => {

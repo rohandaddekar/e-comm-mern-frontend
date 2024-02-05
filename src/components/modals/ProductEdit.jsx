@@ -4,22 +4,30 @@ import getInputFieldError from "../../utils/getInputFieldError";
 import { useEffect, useState } from "react";
 import TextInput from "../Inputs/Text";
 import Button from "../Buttons/Button";
-import {
-  useGetAllCategories,
-  useGetCategoryDetails,
-  useUpdateCategoryDetails,
-} from "../../apis/category/category";
+import { useGetAllCategories } from "../../apis/category/category";
 import ImageUploader from "../ImageUpload";
-import CategoryList from "../Category/CategoryList";
+import {
+  useGetAllProducts,
+  useGetProductDetails,
+  useUpdateProduct,
+} from "../../apis/product/product";
+import ProductList from "../Product/ProductList";
+import SelectSingleWithSearch from "../Inputs/SelectSingleWithSearch";
+import OldImages from "../Product/OldImages";
 
 const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
-  const { data, isLoading, getCategoryDetailsReq } = useGetCategoryDetails();
+  const { data, isLoading, getProductDetailsReq } = useGetProductDetails();
   const {
     data: updateData,
     isLoading: updateIsLoading,
     error: updateError,
-    updateCategoryDetailsReq,
-  } = useUpdateCategoryDetails();
+    updateProductReq,
+  } = useUpdateProduct();
+  const {
+    data: allProductData,
+    isLoading: allProductIsLoading,
+    getAllProductsReq,
+  } = useGetAllProducts();
   const {
     data: allCategoryData,
     isLoading: allCategoryIsLoading,
@@ -27,31 +35,49 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
   } = useGetAllCategories();
 
   const [formData, setFormData] = useState({
+    categoryId: "",
     name: "",
-    icon: "",
+    images: [],
+    price: "",
+    discountPercentage: "0",
+    stock: "",
   });
 
-  const [isCategoryListVisible, setCategoryListVisible] = useState(false);
+  const [isListVisible, setListVisible] = useState(false);
+  const [oldImages, setOldImages] = useState([]);
+
+  useEffect(() => {
+    getAllCategoriesReq();
+  }, []);
 
   const onFileUpload = (imageList) => {
     if (imageList.length > 0) {
       setFormData((prev) => ({
         ...prev,
-        icon: imageList[0].file,
+        images: imageList.map((image) => image.file),
       }));
     }
   };
 
   useEffect(() => {
-    selectedId && getCategoryDetailsReq(selectedId);
+    selectedId && getProductDetailsReq(selectedId);
   }, [selectedId]);
 
   useEffect(() => {
-    data &&
+    if (data) {
       setFormData({
-        name: data?.category?.name || "",
-        icon: data?.category?.icon || "",
+        categoryId:
+          {
+            value: data.product.categoryId._id,
+            label: data.product.categoryId.name,
+          } || "",
+        name: data.product.name || "",
+        price: data.product.price || "",
+        discountPercentage: data.product.discountPercentage || "0",
+        stock: data.product.stock || "",
       });
+      setOldImages(data.product.images || []);
+    }
   }, [data]);
 
   const onChangeHandler = (field, value) => {
@@ -61,13 +87,13 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
     }));
 
     if (field === "name") {
-      getAllCategoriesReq({ name: value });
-      setCategoryListVisible(true);
+      getAllProductsReq({ name: value });
+      setListVisible(true);
     }
   };
 
-  const closeCategoryList = () => {
-    setCategoryListVisible(false);
+  const closeList = () => {
+    setListVisible(false);
   };
 
   const updateHandler = async (e) => {
@@ -75,13 +101,20 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
 
     const formDataObj = new FormData();
 
-    // Append text data
+    formData.images?.map((image) => {
+      formDataObj.append(`images`, image);
+    });
+    oldImages?.map((image) => {
+      formDataObj.append(`oldImages`, image);
+    });
     formDataObj.append("name", formData.name);
+    formDataObj.append("price", formData.price);
+    formDataObj.append("stock", formData.stock);
+    formDataObj.append("categoryId", formData.categoryId.value || "");
+    formDataObj.append("discountPercentage", formData.discountPercentage);
 
-    // Append image data
-    formDataObj.append("icon", formData.icon);
-
-    await updateCategoryDetailsReq(selectedId, formDataObj);
+    await updateProductReq(selectedId, formDataObj);
+    console.log("oldImages", oldImages);
   };
 
   useEffect(() => {
@@ -95,9 +128,11 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
 
   return (
     <>
-      <dialog id="categoryEditModal" className="modal">
+      <dialog id="productEditModal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg border-b pb-3 mb-3">Update User</h3>
+          <h3 className="font-bold text-lg border-b pb-3 mb-3">
+            Update Product
+          </h3>
 
           {isLoading ? (
             <>loading...</>
@@ -114,20 +149,86 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
                     error={getInputFieldError(updateError?.errors, "name")}
                   />
 
-                  <CategoryList
-                    isCategoryListVisible={isCategoryListVisible}
-                    allCategoryIsLoading={allCategoryIsLoading}
-                    allCategoryData={allCategoryData}
-                    closeCategoryList={closeCategoryList}
+                  <ProductList
+                    isListVisible={isListVisible}
+                    isLoading={allProductIsLoading}
+                    data={allProductData}
+                    closeList={closeList}
                   />
                 </div>
 
-                <ImageUploader onFileUpload={onFileUpload} label={"Icon"} />
+                <SelectSingleWithSearch
+                  label={"Category *"}
+                  isLoading={allCategoryIsLoading}
+                  value={formData.categoryId}
+                  options={allCategoryData?.categories?.map((category) => ({
+                    value: category._id,
+                    label: category.name,
+                  }))}
+                  error={getInputFieldError(updateError?.errors, "categoryId")}
+                  onChange={(value) => onChangeHandler("categoryId", value)}
+                />
+
+                <div>
+                  <p className="text-sm font-medium leading-6 text-gray-900 mb-1">
+                    Images *
+                  </p>
+                  <OldImages images={oldImages} setOldImages={setOldImages} />
+                  <ImageUploader
+                    multiple
+                    onFileUpload={onFileUpload}
+                    error={getInputFieldError(updateError?.errors, "images")}
+                  />
+                </div>
+
+                <TextInput
+                  min={0}
+                  id={"price"}
+                  type={"number"}
+                  label={"Price *"}
+                  value={formData.price}
+                  error={getInputFieldError(updateError?.errors, "price")}
+                  onChange={(value) => onChangeHandler("price", value)}
+                />
+
+                <TextInput
+                  min={0}
+                  max={100}
+                  type={"number"}
+                  id={"discountPercentage"}
+                  label={"Discount (in %) *"}
+                  value={formData.discountPercentage}
+                  error={getInputFieldError(
+                    updateError?.errors,
+                    "discountPercentage"
+                  )}
+                  onChange={(value) =>
+                    onChangeHandler("discountPercentage", value)
+                  }
+                />
+
+                <TextInput
+                  min={0}
+                  id={"stock"}
+                  type={"number"}
+                  label={"Stock *"}
+                  value={formData.stock}
+                  error={getInputFieldError(updateError?.errors, "stock")}
+                  onChange={(value) => onChangeHandler("stock", value)}
+                />
 
                 <Button
                   title={"Update"}
                   type={"submit"}
                   isLoading={updateIsLoading}
+                />
+              </form>
+
+              <form method="dialog" className="mt-3">
+                <Button
+                  title={"Close"}
+                  type={"submit"}
+                  extraClasses={"btn-outline"}
                 />
               </form>
             </>

@@ -2,7 +2,14 @@
 
 import Select from "react-select";
 
-const SelectSingleWithSearch = ({ label, options, value, onChange, error }) => {
+const SelectSingleWithSearch = ({
+  label,
+  isLoading,
+  options,
+  value,
+  onChange,
+  error,
+}) => {
   const customStyles = {
     control: (provided) => ({
       ...provided,
@@ -19,12 +26,16 @@ const SelectSingleWithSearch = ({ label, options, value, onChange, error }) => {
           </span>
         )}
 
-        <Select
-          options={options}
-          value={value}
-          onChange={onChange}
-          styles={customStyles}
-        />
+        {isLoading ? (
+          <>loading...</>
+        ) : (
+          <Select
+            options={options}
+            value={value}
+            onChange={onChange}
+            styles={customStyles}
+          />
+        )}
 
         {error && (
           <span className="text-error text-sm ms-1 mt-1 font-semibold">

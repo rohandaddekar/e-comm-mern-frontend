@@ -121,6 +121,7 @@ const ProductCreate = ({ reFetch }) => {
 
             <SelectSingleWithSearch
               label={"Category *"}
+              isLoading={allCategoryIsLoading}
               value={formData.categoryId}
               options={allCategoryData?.categories?.map((category) => ({
                 value: category._id,
