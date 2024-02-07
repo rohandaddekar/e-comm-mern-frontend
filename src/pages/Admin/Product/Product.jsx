@@ -220,12 +220,6 @@ const Product = () => {
                                   </div>
                                 )}
                               </div>
-                              {/* <div className="mask mask-squircle w-8 h-8">
-                                <img
-                                  src={product?.images[0]}
-                                  alt={product?.name}
-                                />
-                              </div> */}
                             </div>
                             <div>
                               <p className="font-bold">{product?.name}</p>

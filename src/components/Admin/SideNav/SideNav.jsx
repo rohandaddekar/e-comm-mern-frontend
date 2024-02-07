@@ -2,50 +2,8 @@
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineCategory, MdOutlineDashboard } from "react-icons/md";
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { CiBoxes } from "react-icons/ci";
+import links from "../../../utils/AdminSideNavLinks";
 import { useState } from "react";
-
-const links = [
-  {
-    title: "Dashboard",
-    nested: false,
-    to: "/admin",
-    icon: MdOutlineDashboard,
-  },
-  {
-    title: "User",
-    nested: false,
-    to: "/admin/user",
-    icon: HiOutlineUserGroup,
-  },
-  {
-    title: "Category",
-    nested: false,
-    to: "/admin/category",
-    icon: MdOutlineCategory,
-  },
-  {
-    title: "Product",
-    nested: false,
-    to: "/admin/product",
-    icon: CiBoxes,
-  },
-  {
-    title: "Settings",
-    nested: true,
-    icon: IoSettingsOutline,
-    nestedLinks: [
-      {
-        title: "Profile",
-        to: "/admin/profile",
-        icon: MdOutlineDashboard,
-      },
-    ],
-  },
-];
 
 const Link = ({ data }) => {
   const navigate = useNavigate();
@@ -80,10 +38,17 @@ const Link = ({ data }) => {
           (isClicked ? <IoIosArrowUp /> : <IoIosArrowDown />)}
       </div>
       {isClicked && data?.nested === true && (
-        <ul className="menu p-2 w-full mt-1">
+        <ul className="p-2 w-full mt-1">
           {data?.nestedLinks?.map((nestedLink, i) => (
-            <li key={i} className="hover:bg-gray-500 rounded-md">
-              <NavLink to={nestedLink?.to}>
+            <li key={i}>
+              <NavLink
+                to={nestedLink?.to}
+                className={`flex items-center gap-3 px-2 py-1 mb-1 text-sm ${
+                  location.pathname === nestedLink.to
+                    ? "bg-gray-100 text-black active:bg-gray-100"
+                    : "bg-transparent text-white"
+                } hover:text-black hover:bg-gray-100 border-0 rounded-md `}
+              >
                 {<nestedLink.icon className="text-lg" />}
                 {nestedLink?.title}
               </NavLink>
