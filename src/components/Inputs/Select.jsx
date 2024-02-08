@@ -26,7 +26,7 @@ const SelectInput = ({
       )}
 
       <select
-        className={`select select-bordered w-full max-w-xs ${
+        className={`select select-bordered w-full ${
           error && "select-error"
         } ${selectExtraClasses}`}
         value={value}

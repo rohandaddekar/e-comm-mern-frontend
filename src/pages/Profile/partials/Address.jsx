@@ -1,13 +1,33 @@
 import AddressCreate from "../../../components/modals/AddressCreate";
-import DeleteAlert from "../../../components/modals/DeleteAlert";
 import Button from "../../../components/Buttons/Button";
 import Card from "../../../components/Address/Card";
+import { useGetAllAddress } from "../../../apis/address/address";
+import { useEffect, useState } from "react";
 
 const Address = () => {
-  const modalHandler = (e, modalName) => {
+  const { data, getAllAddressReq, isLoading, refetch } = useGetAllAddress();
+
+  const [selectedEditId, setSelectedId] = useState(null);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+
+  useEffect(() => {
+    getAllAddressReq();
+  }, []);
+
+  const modalHandler = (e, modalName, id) => {
     e.preventDefault();
 
+    if (modalName === "addressEditModal") {
+      setSelectedId(id);
+    } else if (modalName === "deleteAlertModal") {
+      setSelectedDeleteId(id);
+    }
+
     document.getElementById(modalName).showModal();
+  };
+
+  const handleRefetch = () => {
+    refetch();
   };
 
   return (
@@ -21,21 +41,20 @@ const Address = () => {
           </form>
         </div>
 
-        <div className="my-5 grid grid-cols-12 gap-5">
-          <Card />
-        </div>
+        {isLoading ? (
+          <>loading...</>
+        ) : data?.addresses?.length === 0 ? (
+          <p>no address</p>
+        ) : (
+          <div className="my-5 grid grid-cols-12 gap-5">
+            {data?.addresses?.map((address, i) => (
+              <Card key={i} data={address} reFetch={handleRefetch} />
+            ))}
+          </div>
+        )}
       </div>
 
-      <AddressCreate />
-
-      <DeleteAlert
-      // data={deleteData}
-      // isLoading={deleteIsLoading}
-      // deleteReq={deleteProductReq}
-      // selectedId={selectedDeleteId}
-      // setSelectedId={setSelectedDeleteId}
-      // reFetch={handleRefetch}
-      />
+      <AddressCreate reFetch={handleRefetch} />
     </>
   );
 };

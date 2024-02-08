@@ -1,8 +1,14 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import Button from "../Buttons/Button";
 import TextInput from "../Inputs/Text";
+import { useCreateAddress } from "../../apis/address/address";
+import getInputFieldError from "../../utils/getInputFieldError";
+import SelectInput from "../Inputs/Select";
 
-const AddressCreate = () => {
+const AddressCreate = ({ reFetch }) => {
+  const { data, isLoading, createAddressReq, error } = useCreateAddress();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -12,6 +18,7 @@ const AddressCreate = () => {
     state: "",
     country: "India",
     pincode: "",
+    isDefault: false,
   });
 
   const onChangeHandler = (field, value) => {
@@ -21,23 +28,35 @@ const AddressCreate = () => {
     }));
   };
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    await createAddressReq(formData);
+  };
+
+  useEffect(() => {
+    const closeButton = document.getElementById("closeButton");
+
+    if (data) {
+      closeButton.click();
+      reFetch();
+    }
+  }, [data]);
+
   return (
     <>
       <dialog id="addressCreateModal" className="modal">
         <div className="modal-box no-scrollbar">
           <h3 className="font-bold text-lg border-b pb-3 mb-3">Add Address</h3>
 
-          <form
-            className="flex flex-col gap-5"
-            // onSubmit={submitHandler}
-          >
+          <form className="flex flex-col gap-5" onSubmit={submitHandler}>
             <TextInput
               id={"firstName"}
               type={"text"}
               label={"First Name *"}
               value={formData.firstName}
               onChange={(value) => onChangeHandler("firstName", value)}
-              // error={getInputFieldError(error?.errors, "firstName")}
+              error={getInputFieldError(error?.errors, "firstName")}
             />
 
             <TextInput
@@ -46,7 +65,7 @@ const AddressCreate = () => {
               label={"Last Name *"}
               value={formData.lastName}
               onChange={(value) => onChangeHandler("lastName", value)}
-              // error={getInputFieldError(error?.errors, "lastName")}
+              error={getInputFieldError(error?.errors, "lastName")}
             />
 
             <TextInput
@@ -56,7 +75,7 @@ const AddressCreate = () => {
               label={"Country *"}
               value={formData.country}
               onChange={(value) => onChangeHandler("country", value)}
-              // error={getInputFieldError(error?.errors, "country")}
+              error={getInputFieldError(error?.errors, "country")}
             />
 
             <TextInput
@@ -65,7 +84,7 @@ const AddressCreate = () => {
               label={"State *"}
               value={formData.state}
               onChange={(value) => onChangeHandler("state", value)}
-              // error={getInputFieldError(error?.errors, "state")}
+              error={getInputFieldError(error?.errors, "state")}
             />
 
             <TextInput
@@ -74,7 +93,7 @@ const AddressCreate = () => {
               label={"City *"}
               value={formData.city}
               onChange={(value) => onChangeHandler("city", value)}
-              // error={getInputFieldError(error?.errors, "city")}
+              error={getInputFieldError(error?.errors, "city")}
             />
 
             <TextInput
@@ -83,7 +102,7 @@ const AddressCreate = () => {
               label={"House No. / Address / Street *"}
               value={formData.street}
               onChange={(value) => onChangeHandler("street", value)}
-              // error={getInputFieldError(error?.errors, "street")}
+              error={getInputFieldError(error?.errors, "street")}
             />
 
             <TextInput
@@ -92,7 +111,7 @@ const AddressCreate = () => {
               label={"Pincode *"}
               value={formData.pincode}
               onChange={(value) => onChangeHandler("pincode", value)}
-              // error={getInputFieldError(error?.errors, "pincode")}
+              error={getInputFieldError(error?.errors, "pincode")}
             />
 
             <TextInput
@@ -101,14 +120,28 @@ const AddressCreate = () => {
               label={"Mobile *"}
               value={formData.mobile}
               onChange={(value) => onChangeHandler("mobile", value)}
-              // error={getInputFieldError(error?.errors, "mobile")}
+              error={getInputFieldError(error?.errors, "mobile")}
             />
 
-            <Button
-              title={"Add"}
-              type={"submit"}
-              // isLoading={isLoading}
+            <SelectInput
+              id={"isDefault"}
+              label={"Want to make this address as default?"}
+              options={[
+                {
+                  title: "No",
+                  value: false,
+                },
+                {
+                  title: "Yes",
+                  value: true,
+                },
+              ]}
+              value={formData.isDefault}
+              onChange={(value) => onChangeHandler("isDefault", value)}
+              error={getInputFieldError(error?.errors, "isDefault")}
             />
+
+            <Button title={"Add"} type={"submit"} isLoading={isLoading} />
           </form>
 
           <form method="dialog" className="mt-3">
