@@ -1,7 +1,15 @@
-import ProductCard from "../../components/Product/ProductCard";
+import { useEffect } from "react";
+import { useGetAllProducts } from "../../apis/product/product";
 import Search from "../../components/Product/Search";
+import Card from "../../components/Product/Card";
 
 const Products = () => {
+  const { data, getAllProductsReq, isLoading } = useGetAllProducts();
+
+  useEffect(() => {
+    getAllProductsReq();
+  }, []);
+
   return (
     <>
       <section className="container mx-auto py-10">
@@ -25,11 +33,17 @@ const Products = () => {
         <div className="grid grid-cols-12">
           <div className="col-span-4"></div>
           <div className="col-span-8">
-            <div className="grid grid-cols-12 gap-10">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-            </div>
+            {isLoading ? (
+              <>loading...</>
+            ) : data?.products?.length === 0 ? (
+              <>no products</>
+            ) : (
+              <div className="grid grid-cols-12 gap-10">
+                {data?.products?.map((product, i) => (
+                  <Card product={product} key={i} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
