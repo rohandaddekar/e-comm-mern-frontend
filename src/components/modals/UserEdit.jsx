@@ -63,7 +63,7 @@ const UserEdit = ({ selectedUserId, setSelectedUserId, reFetchAllUsers }) => {
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonUserEdit");
 
     updateData && closeButton.click();
   }, [updateData]);
@@ -138,7 +138,10 @@ const UserEdit = ({ selectedUserId, setSelectedUserId, reFetchAllUsers }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton" onClick={() => setSelectedUserId(null)}>
+          <button
+            id="closeButtonUserEdit"
+            onClick={() => setSelectedUserId(null)}
+          >
             close
           </button>
         </form>

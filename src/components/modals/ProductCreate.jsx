@@ -84,7 +84,7 @@ const ProductCreate = ({ reFetch }) => {
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonProductCreate");
 
     if (data) {
       closeButton.click();
@@ -182,7 +182,7 @@ const ProductCreate = ({ reFetch }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton">close</button>
+          <button id="closeButtonProductCreate">close</button>
         </form>
       </dialog>
     </>

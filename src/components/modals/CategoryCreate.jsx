@@ -66,7 +66,7 @@ const CategoryCreate = ({ reFetch }) => {
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonCategoryCreate");
 
     if (data) {
       closeButton.click();
@@ -116,7 +116,7 @@ const CategoryCreate = ({ reFetch }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton">close</button>
+          <button id="closeButtonCategoryCreate">close</button>
         </form>
       </dialog>
     </>

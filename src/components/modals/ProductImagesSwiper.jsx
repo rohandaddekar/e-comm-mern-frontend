@@ -49,7 +49,7 @@ const ProductImagesSwiper = ({ images }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton">close</button>
+          <button id="closeButtonProductImgSwiper">close</button>
         </form>
       </dialog>
     </>

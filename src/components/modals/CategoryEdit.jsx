@@ -85,7 +85,7 @@ const CategoryEdit = ({ selectedId, setSelectedId, reFetch }) => {
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonCategoryEdit");
 
     if (updateData) {
       closeButton.click();
@@ -135,7 +135,10 @@ const CategoryEdit = ({ selectedId, setSelectedId, reFetch }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton" onClick={() => setSelectedId(null)}>
+          <button
+            id="closeButtonCategoryEdit"
+            onClick={() => setSelectedId(null)}
+          >
             close
           </button>
         </form>

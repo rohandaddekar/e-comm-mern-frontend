@@ -114,11 +114,10 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
     formDataObj.append("discountPercentage", formData.discountPercentage);
 
     await updateProductReq(selectedId, formDataObj);
-    console.log("oldImages", oldImages);
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonProductEdit");
 
     if (updateData) {
       closeButton.click();
@@ -236,7 +235,10 @@ const ProductEdit = ({ selectedId, setSelectedId, reFetch }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton" onClick={() => setSelectedId(null)}>
+          <button
+            id="closeButtonProductEdit"
+            onClick={() => setSelectedId(null)}
+          >
             close
           </button>
         </form>

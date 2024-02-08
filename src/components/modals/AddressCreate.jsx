@@ -35,7 +35,7 @@ const AddressCreate = ({ reFetch }) => {
   };
 
   useEffect(() => {
-    const closeButton = document.getElementById("closeButton");
+    const closeButton = document.getElementById("closeButtonAddressCreate");
 
     if (data) {
       closeButton.click();
@@ -154,7 +154,7 @@ const AddressCreate = ({ reFetch }) => {
         </div>
 
         <form method="dialog" className="modal-backdrop">
-          <button id="closeButton">close</button>
+          <button id="closeButtonAddressCreate">close</button>
         </form>
       </dialog>
     </>
