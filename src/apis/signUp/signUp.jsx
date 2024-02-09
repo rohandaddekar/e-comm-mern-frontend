@@ -18,7 +18,13 @@ const useSignUp = () => {
     try {
       setIsLoading(true);
       const res = await axiosInstance.post("/auth/sign-up", payload);
-      dispatch(signIn({ token: res?.data?.token, role: res?.data?.role }));
+      dispatch(
+        signIn({
+          token: res?.data?.token,
+          role: res?.data?.role,
+          cartId: res?.data?.cartId,
+        })
+      );
       navigate("/");
       setData(res?.data);
       toast.success(res?.data?.message);

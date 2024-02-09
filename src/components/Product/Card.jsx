@@ -1,18 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { BsDash, BsPlus } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
+import { useAddItemToCart } from "../../apis/cart/cart";
+import ItemCount from "../Cart/ItemCount";
 
 const Card = ({ product }) => {
-  const [itemCount, setItemCount] = useState(0);
+  const { isLoading } = useAddItemToCart();
 
-  const itemCountHandler = (method) => {
-    if (method === "add") {
-      setItemCount(itemCount + 1);
-    } else {
-      itemCount > 0 && setItemCount(itemCount - 1);
-    }
-  };
+  const [itemCount, setItemCount] = useState(0);
 
   return (
     <>
@@ -33,21 +28,16 @@ const Card = ({ product }) => {
               {product?.categoryId?.name}
             </div>
           </div>
-          <div className="flex gap-3 items-center justify-end mt-2">
-            <button
-              className="btn btn-circle btn-outline btn-sm"
-              onClick={() => itemCountHandler("subtract")}
-            >
-              <BsDash />
-            </button>
-            {itemCount}
-            <button
-              className="btn btn-circle btn-outline btn-sm"
-              onClick={() => itemCountHandler("add")}
-            >
-              <BsPlus />
-            </button>
-          </div>
+          {isLoading ? (
+            <>loading...</>
+          ) : (
+            <ItemCount
+              itemCount={itemCount}
+              onIncrement={() => setItemCount(itemCount + 1)}
+              onDecrement={() => setItemCount(itemCount - 1)}
+              productId={product?._id}
+            />
+          )}
         </div>
       </div>
     </>

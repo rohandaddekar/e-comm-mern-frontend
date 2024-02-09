@@ -15,6 +15,7 @@ import Category from "./pages/Admin/Category/Category";
 import Product from "./pages/Admin/Product/Product";
 import User from "./pages/Admin/User/User";
 import ProfileLayout from "./pages/Profile/ProfileLayout";
+import Cart from "./pages/Cart/Cart";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <ProfileLayout />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
     ],
   },

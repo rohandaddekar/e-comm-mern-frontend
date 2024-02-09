@@ -59,9 +59,12 @@ const Header = () => {
                     <span className="font-bold text-lg">8 Items</span>
                     <span className="text-info">Subtotal: $999</span>
                     <div className="card-actions">
-                      <button className="btn btn-primary btn-block">
+                      <NavLink
+                        to={"/cart"}
+                        className="btn btn-primary btn-block"
+                      >
                         View cart
-                      </button>
+                      </NavLink>
                     </div>
                   </div>
                 </div>
