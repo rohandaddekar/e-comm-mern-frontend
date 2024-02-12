@@ -1,13 +1,24 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemCount from "./ItemCount";
-import { useGetAllCartItems } from "../../apis/cart/cart";
+import { MdDeleteForever } from "react-icons/md";
+import { useDeleteCartItem } from "../../apis/cart/cart";
 
-const CartItem = ({ item, index }) => {
-  const { refetch } = useGetAllCartItems();
+const CartItem = ({ item, index, refetch }) => {
+  const {
+    data: dataDeleteCartItem,
+    deleteCartItemReq,
+    isLoading: isLoadingDeleteCartItem,
+  } = useDeleteCartItem();
 
   const [itemCount, setItemCount] = useState(item?.quantity || 0);
+
+  useEffect(() => {
+    if (dataDeleteCartItem) {
+      refetch();
+    }
+  }, [dataDeleteCartItem]);
 
   return (
     <>
@@ -21,20 +32,32 @@ const CartItem = ({ item, index }) => {
           />
           <p>{item?.productId?.name}</p>
         </div>
-        <div>
-          <p className="text-lg text-end font-bold">
-            ₹ {item?.productId?.price / item?.productId?.discountPercentage}
-          </p>
-          <p className="line-through italic text-sm text-end">
-            ₹ {item?.productId?.price}
-          </p>
-          <ItemCount
-            itemCount={itemCount}
-            onIncrement={() => setItemCount(itemCount + 1)}
-            onDecrement={() => setItemCount(itemCount - 1)}
-            productId={item?.productId?._id}
-            refetch={refetch}
-          />
+        <div className="flex gap-5 items-center">
+          <div>
+            <p className="text-lg text-end font-bold">
+              ₹ {item?.productId?.price}
+            </p>
+            <p className="line-through italic text-sm text-end">
+              ₹ {item?.productId?.price}
+            </p>
+            <ItemCount
+              itemCount={itemCount}
+              onIncrement={() => setItemCount(itemCount + 1)}
+              onDecrement={() => setItemCount(itemCount - 1)}
+              productId={item?.productId?._id}
+              refetch={refetch}
+            />
+          </div>
+          <div
+            className="cursor-pointer hover:text-red-800"
+            onClick={() => deleteCartItemReq(item?._id)}
+          >
+            {isLoadingDeleteCartItem ? (
+              <>deleting</>
+            ) : (
+              <MdDeleteForever size={24} />
+            )}
+          </div>
         </div>
       </div>
     </>

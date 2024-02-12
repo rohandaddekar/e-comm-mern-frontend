@@ -1,13 +1,30 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAddItemToCart } from "../../apis/cart/cart";
+import { useAddItemToCart, useGetCartItem } from "../../apis/cart/cart";
 import ItemCount from "../Cart/ItemCount";
+import { useSelector } from "react-redux";
 
 const Card = ({ product }) => {
+  const loggedUser = useSelector((state) => state.user);
   const { isLoading } = useAddItemToCart();
+  const {
+    isLoading: isLoadingCartItem,
+    data: dataCartItem,
+    getCartItemReq,
+  } = useGetCartItem();
 
   const [itemCount, setItemCount] = useState(0);
+
+  useEffect(() => {
+    getCartItemReq(product._id);
+  }, []);
+
+  useEffect(() => {
+    if (dataCartItem) {
+      setItemCount(dataCartItem?.item?.quantity || 0);
+    }
+  }, [dataCartItem]);
 
   return (
     <>
@@ -28,16 +45,17 @@ const Card = ({ product }) => {
               {product?.categoryId?.name}
             </div>
           </div>
-          {isLoading ? (
-            <>loading...</>
-          ) : (
-            <ItemCount
-              itemCount={itemCount}
-              onIncrement={() => setItemCount(itemCount + 1)}
-              onDecrement={() => setItemCount(itemCount - 1)}
-              productId={product?._id}
-            />
-          )}
+          {loggedUser.userAccessToken &&
+            (isLoading && isLoadingCartItem ? (
+              <>loading...</>
+            ) : (
+              <ItemCount
+                itemCount={itemCount}
+                onIncrement={() => setItemCount(itemCount + 1)}
+                onDecrement={() => setItemCount(itemCount - 1)}
+                productId={product?._id}
+              />
+            ))}
         </div>
       </div>
     </>

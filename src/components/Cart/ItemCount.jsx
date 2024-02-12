@@ -2,6 +2,7 @@
 import { BsDash, BsPlus } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useAddItemToCart } from "../../apis/cart/cart";
+import { useEffect } from "react";
 
 const ItemCount = ({
   itemCount,
@@ -10,7 +11,7 @@ const ItemCount = ({
   productId,
   refetch,
 }) => {
-  const { addItemToCartReq } = useAddItemToCart();
+  const { addItemToCartReq, data } = useAddItemToCart();
 
   const cartId = useSelector((state) => state.user.cartId);
 
@@ -18,15 +19,21 @@ const ItemCount = ({
     if (method === "add") {
       addItemToCartReq({ cartId, productId, quantity: itemCount + 1 });
       onIncrement();
-      refetch && refetch(cartId);
     } else {
       if (itemCount > 0) {
         addItemToCartReq({ cartId, productId, quantity: itemCount - 1 });
         onDecrement();
-        refetch && refetch(cartId);
       }
     }
   };
+
+  useEffect(() => {
+    if (refetch) {
+      if (data) {
+        refetch();
+      }
+    }
+  }, [data, cartId]);
 
   return (
     <div className="flex gap-3 items-center justify-end mt-2">
